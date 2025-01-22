@@ -34,7 +34,7 @@ pub struct GameEpoch {
     pub user_concept_claimed: StorageMap<Address, StorageMap<Concept, StorageBool>>,
 
     // Did this concecpt come true?
-    pub concept_came_true: StorageMap<Concept, StorageBool>,
+    pub concept_is_correct: StorageMap<Concept, StorageBool>,
 }
 
 #[entrypoint]

@@ -55,6 +55,6 @@ of the pool of SGT tokens for the dilution event.
 ```mermaid
 flowchart LR
     Operator
-    --> SubmitsWinningConcepts[Submits winning concepts from the choices earlier that accomplished goals]
-    --> PoolOfSTGSetAside[A pool of STG token is set aside to be claimed once confirmation of the amounts are sent]
-    -->
+    --> SubmitsWinningConcepts[Submits correct concepts from the choices earlier that accomplished goals]
+    --> DeclaresConceptAsCorrect[Concept is declared as being correct, and being claimable]
+```
