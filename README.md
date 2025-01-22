@@ -5,9 +5,11 @@ This repo contains Shahmeer's Game, a quadratic voting game that will be played 
 of the Fluidity Money and Superposition community to suggest changes to 9lives on a weekly
 basis.
 
-Deployment address: `0xFDab24861F407765E6E64c282420585ef7cf68fe`
+|    Name   |                    Address                   |
+|-----------|----------------------------------------------|
+| SGT Token | `0xFDab24861F407765E6E64c282420585ef7cf68fe` |
 
-## Ideation user story
+## Ideation
 
 A user ideates a concept, and shares it with the contract. They do so to receive STG token
 during the next dilution event.
@@ -18,7 +20,7 @@ flowchart LR
     -->|Hashes proposal| SendsToWebApp[Sends to webapp the preimage]
 ```
 
-## Voting user story
+## Voting
 
 Users add votes to concepts they like. They do so by increasing their amount tracked as
 allocated.
@@ -30,7 +32,7 @@ flowchart LR
     --> SpendsAmount[Predict with tokens]
 ```
 
-## Winners chosen user story
+## Winners chosen
 
 The operator supplies winning concepts to notify the contract that they were chosen for
 inclusion in the next round of product features. In doing so, the users that ideated the
