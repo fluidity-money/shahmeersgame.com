@@ -1,0 +1,23 @@
+[package]
+name = "shahmeersgame"
+version = "0.1.0"
+edition = "2024"
+
+[lib]
+name = "libshahmeersgame"
+edition = "2021"
+
+[profile.release]
+codegen-units = 1
+opt-level = "z"
+strip = true
+lto = true
+debug = false
+rpath = false
+debug-assertions = false
+incremental = false
+
+[dependencies]
+stylus-sdk = "=0.7.0"
+alloy-primitives = "=0.8.14"
+alloy-sol-types = "=0.8.14"
