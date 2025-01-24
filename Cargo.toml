@@ -21,3 +21,10 @@ incremental = false
 stylus-sdk = "=0.7.0"
 alloy-primitives = "=0.8.14"
 alloy-sol-types = "=0.8.14"
+const-hex = "1.14.0"
+map-macro = "0.3.0"
+mutants = "0.0.3"
+
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+tiny-keccak = "2.0.2"
+proptest = "1.6.0"

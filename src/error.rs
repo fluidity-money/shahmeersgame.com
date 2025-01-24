@@ -2,8 +2,10 @@
 use alloc::{vec::Vec, vec};
 
 #[repr(C)]
+#[derive(Debug)]
 pub enum Error {
     AlreadyCreated,
+    ZeroSTGAmt,
     NotEnabled,
     ConceptRegistered,
     ConceptNotRegistered,
@@ -16,6 +18,17 @@ pub enum Error {
     BadConcepts,
     WinnersPicked,
     NotOperator,
+    BadConcept,
+    WinnersNotPicked,
+    NotCorrectConcept,
+    BadEpoch,
+    AlreadyClaimed,
+    BadBeneficiary,
+    ConceptDoneAlready,
+    ConceptZeroSupplied,
+    ConceptNoUserQuad,
+    CheckedSub,
+    ZeroVotes,
 }
 
 impl From<Error> for u8 {

@@ -13,8 +13,8 @@ pub fn unpack_u256(x: Vec<u8>) -> R<U256> {
 
 #[test]
 fn test_unpack_u256() {
-    unpack_u256(
+    assert_eq!(
         U256::from(123),
-        const_hex::decode("000000000000000000000000000000000000000000000000000000000000007b"),
+        unpack_u256(const_hex::decode("000000000000000000000000000000000000000000000000000000000000007b").unwrap()).unwrap(),
     );
 }

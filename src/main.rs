@@ -3,3 +3,5 @@
 // This is needed to know how to enter your Stylus program. This is
 // created using a macro.
 pub use libshahmeersgame::user_entrypoint;
+
+fn main() {}

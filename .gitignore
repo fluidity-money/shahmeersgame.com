@@ -7,3 +7,5 @@ docs/
 .env
 target
 shahmeersgame.wasm
+mutants.out
+mutants.out.old

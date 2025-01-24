@@ -1,0 +1,7 @@
+# Seeds for failure cases proptest has generated in the past. It is
+# automatically read and these particular cases re-run before any
+# novel cases are generated.
+#
+# It is recommended to check this file in to source control so that
+# everyone who runs the test benefits from these saved cases.
+cc 29ad426e54e5921bc73c34008fb3dfa7578d177f8da0aedf54ab4758460add99 # shrinks to mut c = ShahmeersGame { enabled: StorageBool { slot: 183703793567691167542586, offset: 31, cached: OnceCell(false) }, version: StorageUint { slot: 183703793567691167542587, offset: 0, cached: OnceCell(267235951253514340962210) }, token addr: StorageAddress { slot: 183703793567691167542588, offset: 12, cached: OnceCell(0x0000000000000000000000000000000000000000) }, operator addr: StorageAddress { slot: 183703793567691167542589, offset: 12, cached: OnceCell(0x0000000000000000000000000000000000000000) }, dilution stg correct concepts: StorageUint { slot: 183703793567691167542590, offset: 0, cached: OnceCell(0) }, dilution stg submitters: StorageUint { slot: 183703793567691167542591, offset: 0, cached: OnceCell(0) }, .. }, concept = 0x00000000000000000000000000000000000000000000af90b8fb7dc9f208e954

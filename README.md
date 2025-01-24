@@ -17,7 +17,7 @@ during the next dilution event.
 ```mermaid
 flowchart LR
     IdeaCreator[Idea creator]
-    -->|Hashes proposal| SendsToWebApp[Sends to webapp the preimage]
+    -->|Hashes concept| SendsToWebApp[Sends to webapp the preimage]
 ```
 
 ## Voting
@@ -28,7 +28,7 @@ allocated.
 ```mermaid
 flowchart LR
     Predictor
-    --> ChoosesProposal[Chooses proposal based on webapp ideas]
+    --> ChoosesConcept[Chooses concept based on webapp ideas]
     --> SpendsAmount[Predict with tokens]
 ```
 
@@ -43,8 +43,8 @@ true.
 ```mermaid
 flowchart LR
     Agent
-    --> SubmitsProposalData[Supplies proposals]
-    --> WinningProposalsChosen[Winning proposals have storage set of the amount of STG token available for them]
+    --> SubmitsConceptId[Supplies concepts]
+    --> WinningConceptsChosen[Winning concepts have storage set of the amount of STG token available for them]
     --> ConceptsSTGAmtSet[STG that could be claimed in the future if the concept comes true marked]
 ```
 
@@ -59,4 +59,16 @@ flowchart LR
     Operator
     --> SubmitsWinningConcepts[Submits correct concepts from the choices earlier that accomplished goals]
     --> DeclaresConceptAsCorrect[Concept is declared as being correct, and being claimable]
+```
+
+## Correct predictors draw down amount
+
+Previous stage predictors draw down the concepts they voted on. In doing so, they receive
+their share of the token dilution for each claimable section.
+
+```mermaid
+flowchart LR
+    Predictor
+    --> SuppliesWinningConceptId[Supplies winning concept to claim for]
+    --> ReceivesSTGShare[Receives STG amount]
 ```
