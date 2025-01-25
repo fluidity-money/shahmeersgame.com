@@ -8,6 +8,8 @@ basis.
 |    Name   |                    Address                   |
 |-----------|----------------------------------------------|
 | SGT Token | `0xFDab24861F407765E6E64c282420585ef7cf68fe` |
+| Impl      | `0x375e342a200fbea21bc7f3db3830b5543dc0bd13` |
+| Proxy     | `0x9f98a61646eBF8C7c13394ad352C192eb90c740F` |
 
 ## Ideation
 

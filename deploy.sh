@@ -20,8 +20,12 @@ echo "SPN_SHAHMEERSGAME_IMPL=$SPN_SHAHMEERSGAME_IMPL"
 
 forge create \
 	--broadcast \
+	--json \
 	--rpc-url "$SPN_SUPERPOSITION_URL" \
 	--private-key "$SPN_SUPERPOSITION_KEY" \
 	foundry-libs/openzeppelin-contracts/contracts/proxy/transparent/TransparentUpgradeableProxy.sol:TransparentUpgradeableProxy \
-	--constructor-args "$impl" "$SPN_ADMIN_ADDR"  "$SPN_SHAHMEERSGAME_IMPL" "$(cast calldata 'ctor(address,address,uint256,uint256)' "$SPN_SHAHMEERSGAME_TOKEN_ADDR" "$SPN_ADMIN_ADDR" "$SPN_DILUTION_CONCEPT_AMT" "$SPN_DILUTION_SUBMITTER_AMT")" \
+	--constructor-args \
+		"$SPN_SHAHMEERSGAME_IMPL" \
+		"$SPN_ADMIN_ADDR"  \
+		"$(cast calldata 'ctor(address,address,uint256,uint256)' "$SPN_SHAHMEERSGAME_TOKEN_ADDR" "$SPN_ADMIN_ADDR" "$SPN_DILUTION_CONCEPT_AMT" "$SPN_DILUTION_SUBMITTER_AMT")" \
 		| jq -r .deployedTo
