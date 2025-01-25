@@ -4,4 +4,5 @@
 // created using a macro.
 pub use libshahmeersgame::user_entrypoint;
 
+#[allow(unused)]
 fn main() {}
