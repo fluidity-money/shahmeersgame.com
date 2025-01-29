@@ -1,7 +1,7 @@
 import { getDefaultConfig } from "@rainbow-me/rainbowkit";
 
 export const superposition = {
-    id: 5001,
+    id: 55244,
     name: "Superposition",
     network: "superposition",
     iconUrl: "https://ipfs.io/ipfs/https://ipfs.io/ipfs/QmeXAvjMNnoVtrMRJZkxz7yVgWXTg7XkgvynPZifQzJuD2/logo.svg",
