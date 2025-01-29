@@ -1,0 +1,42 @@
+
+type Idea {
+  """
+  Timestamp of this creation.
+  """
+  time: Int!
+
+  """
+  Description of this idea.
+  """
+  desc: String!
+
+  """
+  Hash of this idea in its submitted form.
+  """
+  hash: String!
+
+  """
+  Submitter of this idea's address. We track this for internal use sake, we don't actually
+  track if this was created, or if someone lied about the creation. We won't even display
+  this to the UI.
+  """
+  submitter: String!
+}
+
+type Query {
+  ideas: [Idea!]!
+}
+
+type Mutation {
+  explainIdea(
+    """
+    Description of the idea, tracked in the database.
+    """
+    desc: String!
+
+    """
+    Submitter of this idea.
+    """
+    submitter: String!
+  ): Boolean!
+}
