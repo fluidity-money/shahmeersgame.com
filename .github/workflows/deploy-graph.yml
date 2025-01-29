@@ -3,7 +3,7 @@ name: Deploy graph
 on:
   push:
     branches:
-      - main
+      - trunk
     paths:
       - 'lib/**'
       - 'cmd/graphql.webapp/**'
