@@ -46,7 +46,7 @@ jobs:
 
       - name: Build lambda zip
         run: |
-          cd cmd/graphql.ethereum
+          cd cmd/graphql.webapp
           make lambda
 
       - name: Deploy to AWS Lambda
