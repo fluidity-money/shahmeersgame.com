@@ -3,15 +3,15 @@ include ../golang.mk
 
 .PHONY: lambda
 
-build: graphql.ethereum
+build: graphql.webapp
 
 lambda: bootstrap.zip
 
 CHANGELOG.md: ../../CHANGELOG.md
 	@cp ../../CHANGELOG.md CHANGELOG.md
 
-bootstrap: graphql.ethereum
-	@cp graphql.ethereum bootstrap
+bootstrap: graphql.webapp
+	@cp graphql.webapp bootstrap
 
 bootstrap.zip: bootstrap
 	@zip bootstrap.zip bootstrap
