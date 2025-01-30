@@ -55,10 +55,6 @@ pub struct ShahmeersGame {
     // marked for inclusion.
     pub submitters: StorageMap<Concept, StorageAddress>,
 
-    // Submitters who are entitled to a fixed amount for having their idea
-    // be included for submission.
-    pub submitters_claimable: StorageMap<Address, StorageU256>,
-
     // Was this concept correct? We do this to remember in perpetuity so we don't have a
     // mysterious repeat of this concept's submission.
     pub concept_is_correct: StorageMap<Concept, StorageBool>,

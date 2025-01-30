@@ -274,4 +274,38 @@ impl ShahmeersGame {
         });
         Ok(prev_epoch as u64 + 1)
     }
+
+    pub fn get_votes(&self, c: Concept) -> R<U256> {
+        let e = self.epochs.getter(self.epochs.len() - 1).unwrap();
+        Ok(e.concept_quad_amts.get(c))
+    }
+
+    pub fn get_s_t_g(&self, c: Concept) -> R<U256> {
+        let e = self.epochs.getter(self.epochs.len() - 1).unwrap();
+        Ok(e.concept_stg_amts.get(c))
+    }
+
+    pub fn are_winners_picked(&self) -> R<bool> {
+        let e = self.epochs.getter(self.epochs.len() - 1).unwrap();
+        Ok(e.winners_picked.get())
+    }
+
+    pub fn get_user_votes(&self, c: Concept, user: Address) -> R<U256> {
+        let e = self.epochs.getter(self.epochs.len() - 1).unwrap();
+        Ok(e.user_concept_quad_amts.getter(user).get(c))
+    }
+
+    pub fn get_user_s_t_g_spent(&self, user: Address) -> R<U256> {
+        let e = self.epochs.getter(self.epochs.len() - 1).unwrap();
+        Ok(e.user_stg_amts.get(user))
+    }
+
+    pub fn is_concept_correct(&self, c: Concept) -> R<bool> {
+        Ok(self.concept_is_correct.get(c))
+    }
+
+    pub fn is_concept_claimable(&self, c: Concept, user: Address) -> R<bool> {
+        let e = self.epochs.getter(self.epochs.len() - 1).unwrap();
+        Ok(e.user_concept_claimed.getter(user).get(c))
+    }
 }

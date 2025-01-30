@@ -28,4 +28,16 @@ interface IShahmeersGame {
     ) external returns (uint256);
 
     function bumpEpoch() external returns (uint64);
+
+    function getVotes(bytes8 concept) external view returns (uint256);
+    function getSTG(bytes8 concept) external view returns (uint256);
+    function getUserVotes(bytes8 concept, address user) external view returns (uint256);
+
+    function getUserSTGSpent(address user) external view returns (uint256);
+
+    function areWinnersPicked() external view returns (bool);
+
+    function isConceptCorrect(bytes8 concept) external view returns (bool);
+
+    function isConceptClaimable(bytes8 concept, address user) external view returns (bool);
 }

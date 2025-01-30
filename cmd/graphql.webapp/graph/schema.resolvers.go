@@ -13,11 +13,16 @@ import (
 
 	"golang.org/x/crypto/sha3"
 
+	ethCommon "github.com/ethereum/go-ethereum/common"
+
 	"github.com/fluidity-money/shahmeersgame.com/cmd/graphql.webapp/graph/model"
 )
 
 // ExplainIdea is the resolver for the explainIdea field.
 func (r *mutationResolver) ExplainIdea(ctx context.Context, desc string, submitter string) (bool, error) {
+	if !ethCommon.IsHexAddress(submitter) {
+		return false, fmt.Errorf("not address")
+	}
 	b := sha3.Sum256([]byte(desc))
 	h := hex.EncodeToString(b[:])
 	_, err := r.Db.Exec(`
@@ -41,7 +46,7 @@ INSERT INTO shahmeersgame_ideas_1 (creator, desc_, hashed) VALUES ($1, $2, $3)`,
 // Ideas is the resolver for the ideas field.
 func (r *queryResolver) Ideas(ctx context.Context) ([]*model.Idea, error) {
 	rows, err := r.Db.Query(`
-SELECT (created_by, creator, desc_, hashed) FROM shahmeersgame_ideas_1`,
+SELECT created_by, creator, desc_, hashed FROM shahmeersgame_ideas_1`,
 	)
 	if err != nil {
 		slog.Error("Reading ideas", "err", err)

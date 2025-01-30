@@ -9,3 +9,4 @@ target
 shahmeersgame.wasm
 mutants.out
 mutants.out.old
+web/node_modules
