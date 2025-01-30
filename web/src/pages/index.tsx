@@ -80,15 +80,15 @@ const Home: NextPage = () => {
       args: [address, timepoint ? timepoint : BigInt(0)]
     }
   ]});
-  const [conceptVotes, userVotes, sgtBal, curVotes, pastVotes] =
-    contractResData ? contractResData.map(({result}) => result) : [[], [], BigInt(0), BigInt(0), BigInt(0)];
+  const conceptVotes = contractResData ? [...contractResData[0].result ? contractResData[0].result : []] : [];
+  const userVotes = contractResData ? [...contractResData[1].result ? contractResData[1].result : []] : [];
+  const sgtBal = contractResData ? contractResData[2].result : BigInt(0);
+  const curVotes = contractResData ? contractResData[3].result : BigInt(0);
+  const pastVotes = contractResData ? contractResData[4].result : BigInt(0);
+  console.log("concept shit", contractResData);
   const concepts = (() => {
     if (!ideas || !conceptVotes || !userVotes) return [];
-    const l = ideas.length;
-    if (l == conceptVotes.length && l == userVotes.length)
-      return zipThree(ideas, conceptVotes, userVotes);
-    else
-      return [];
+    return zipThree(ideas, conceptVotes, userVotes);
   })();
   concepts.sort((a, b) => (b[0] > a[0] ? 1 : -1));
   return (
