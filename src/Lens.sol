@@ -10,9 +10,28 @@ contract Lens {
         SHAHMEERSGAME = shahmeersGame;
     }
 
+    function getVotes(
+        bytes32[] calldata concepts
+    ) external view returns (uint256[] memory votes) {
+        votes = new uint256[](concepts.length);
+        for (uint i = 0; i < concepts.length; ++i) {
+            votes[i] = SHAHMEERSGAME.getVotes(concepts[i]);
+        }
+    }
+
+    function userVoted(
+        address user,
+        bytes32[] calldata concepts
+    ) external view returns (uint256[] memory voted) {
+        voted = new uint256[](concepts.length);
+        for (uint i = 0; i < concepts.length; ++i) {
+            voted[i] = SHAHMEERSGAME.getUserVotes(concepts[i], user);
+        }
+    }
+
     function claimableForUser(
         address user,
-        bytes8[] calldata concepts
+        bytes32[] calldata concepts
     ) external view returns (bool[] memory claimable) {
         claimable = new bool[](concepts.length);
         for (uint i = 0; i < concepts.length; ++i) {

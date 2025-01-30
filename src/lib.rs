@@ -109,7 +109,7 @@ impl ShahmeersGame {
 
     /// Take some STG from a concept. We can't allow this to take place if the
     /// winners were already called, though it would be waste without harm!
-    pub fn take_votes(&mut self, concept: Concept, stg_amt: U256) -> R<()> {
+    pub fn take_votes(&mut self, concept: Concept, stg_amt: U256) -> R<U256> {
         assert_or!(self.enabled.get(), Error::NotEnabled);
         let mut e = self.epochs.setter(self.epochs.len() - 1).unwrap();
         assert_or!(!e.winners_picked.get(), Error::WinnersPicked);
@@ -136,7 +136,25 @@ impl ShahmeersGame {
             (e.user_concept_quad_amts, msg_sender(), concept, quad_amt);
             (e.global_quad_amts, quad_amt);
         };
-        Ok(())
+        Ok(stg_amt)
+    }
+
+    /// Take or add votes from several concepts, printing the amount of STG
+    /// taken/returned.
+    pub fn adjust_votes(&mut self, adjustments: Vec<(Concept, I256)>) -> R<Vec<U256>> {
+        // Thanks to Stylus caching, we can be extremely lazy here with how we
+        // extend the other functions to implement this, making arbitrary checks
+        // mostly safe (and LLVM will optimise this away for us anyway).
+        adjustments
+            .into_iter()
+            .map(|(c, a)| {
+                if a.is_negative() {
+                    self.take_votes(c, a.into_raw())
+                } else {
+                    self.add_votes(c, a.into_raw())
+                }
+            })
+            .collect::<R<Vec<_>>>()
     }
 
     /// Choose winners by going through the amount of quadratic votes in each
@@ -275,37 +293,50 @@ impl ShahmeersGame {
         Ok(prev_epoch as u64 + 1)
     }
 
+    #[mutants::skip]
     pub fn get_votes(&self, c: Concept) -> R<U256> {
         let e = self.epochs.getter(self.epochs.len() - 1).unwrap();
         Ok(e.concept_quad_amts.get(c))
     }
 
+    #[mutants::skip]
     pub fn get_s_t_g(&self, c: Concept) -> R<U256> {
         let e = self.epochs.getter(self.epochs.len() - 1).unwrap();
         Ok(e.concept_stg_amts.get(c))
     }
 
+    #[mutants::skip]
     pub fn are_winners_picked(&self) -> R<bool> {
         let e = self.epochs.getter(self.epochs.len() - 1).unwrap();
         Ok(e.winners_picked.get())
     }
 
+    #[mutants::skip]
     pub fn get_user_votes(&self, c: Concept, user: Address) -> R<U256> {
         let e = self.epochs.getter(self.epochs.len() - 1).unwrap();
         Ok(e.user_concept_quad_amts.getter(user).get(c))
     }
 
+    #[mutants::skip]
     pub fn get_user_s_t_g_spent(&self, user: Address) -> R<U256> {
         let e = self.epochs.getter(self.epochs.len() - 1).unwrap();
         Ok(e.user_stg_amts.get(user))
     }
 
+    #[mutants::skip]
     pub fn is_concept_correct(&self, c: Concept) -> R<bool> {
         Ok(self.concept_is_correct.get(c))
     }
 
+    #[mutants::skip]
     pub fn is_concept_claimable(&self, c: Concept, user: Address) -> R<bool> {
         let e = self.epochs.getter(self.epochs.len() - 1).unwrap();
         Ok(e.user_concept_claimed.getter(user).get(c))
+    }
+
+    #[mutants::skip]
+    pub fn start_time(&self) -> R<U64> {
+        let e = self.epochs.getter(self.epochs.len() - 1).unwrap();
+        Ok(e.time.get())
     }
 }

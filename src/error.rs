@@ -29,6 +29,7 @@ pub enum Error {
     ConceptNoUserQuad,
     CheckedSub,
     ZeroVotes,
+    CheckedPow,
 }
 
 impl From<Error> for u8 {

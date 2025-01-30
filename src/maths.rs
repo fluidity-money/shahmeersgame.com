@@ -2,7 +2,9 @@ use stylus_sdk::alloy_primitives::U256;
 
 pub const SCALING_AMT: U256 = U256::from_limbs([1000, 0, 0, 0]);
 
-/// Compute the quadratic voting power of a STG amount using the Babylonian method.
+/// Compute the quadratic voting power of a STG amount using the Babylonian method for a
+/// square root. It should be okay to skip mutatnt testing since we test this below.
+#[mutants::skip]
 pub fn stg_to_quad(x: U256) -> U256 {
     // Since the Alloy implementation uses some floating point conversions
     // the Stylus runtime doesn't have. Rounds down.
@@ -26,6 +28,7 @@ mod test {
     use proptest::prelude::*;
 
     proptest! {
+        #![proptest_config(ProptestConfig::with_cases(100000))]
         #[test]
         fn test_stg_to_quad(x in crate::storage::strat_tiny_u256()) {
             assert_eq!(x.root(2), super::stg_to_quad(x));
