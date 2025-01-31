@@ -5,7 +5,11 @@ import Head from "next/head";
 import styles from "../styles/Home.module.css";
 import { graphql } from "../gql";
 import { useQuery } from '@apollo/client';
-import { useReadContract, useReadContracts, useAccount } from 'wagmi';
+import {
+  useReadContract,
+  useReadContracts,
+  useAccount } from 'wagmi';
+import { formatUnits } from 'viem';
 
 const ideasQuery = graphql(`
   query getIdeas{
@@ -48,7 +52,9 @@ const Home: NextPage = () => {
   const { address: address_ } = useAccount();
   const address = address_ ? address_ : "0x0000000000000000000000000000000000000000";
   const conceptHashes = (ideas.map(({hash}) => `0x${hash}`)) as readonly `0x${string}`[];
-  const [userAllocatedAmounts, setUserAllocatedAmounts] = useState({});
+  const [userAllocatedAmounts, setUserAllocatedAmounts] =
+    useState(new Map<string, bigint>());
+  const [votesExtra, setVotesExtra] = useState(BigInt(0));
   const { data: timepoint } = useReadContract({
     ...ShahmeersGame,
     functionName: "startTime"
@@ -78,14 +84,26 @@ const Home: NextPage = () => {
       ...SGToken,
       functionName: "getPastVotes",
       args: [address, timepoint ? timepoint : BigInt(0)]
+    },
+    {
+      ...ShahmeersGame,
+      functionName: "getUserSTGSpent",
+      args: [address]
     }
   ]});
-  const conceptVotes = contractResData ? [...contractResData[0].result ? contractResData[0].result : []] : [];
-  const userVotes = contractResData ? [...contractResData[1].result ? contractResData[1].result : []] : [];
-  const sgtBal = contractResData ? contractResData[2].result : BigInt(0);
-  const curVotes = contractResData ? contractResData[3].result : BigInt(0);
-  const pastVotes = contractResData ? contractResData[4].result : BigInt(0);
-  console.log("concept shit", contractResData);
+  const conceptVotes =
+    contractResData ? [...contractResData[0].result ? contractResData[0].result : []] : [];
+  const userVotes =
+    contractResData ? [...contractResData[1].result ? contractResData[1].result : []] : [];
+  const sgtBal =
+    contractResData ? contractResData[2].result ? contractResData[2].result : BigInt(0) : BigInt(0);
+  const curVotes =
+    contractResData ? contractResData[3].result ? contractResData[3].result : BigInt(0) : BigInt(0);
+  const pastVotes =
+    contractResData ? contractResData[4].result ? contractResData[4].result : BigInt(0) : BigInt(0);
+  const votesAlreadySpent =
+    contractResData ? contractResData[5].result ? contractResData[5].result : BigInt(0) : BigInt(0);
+  const votesRemaining = pastVotes - votesAlreadySpent + votesExtra;
   const concepts = (() => {
     if (!ideas || !conceptVotes || !userVotes) return [];
     return zipThree(ideas, conceptVotes, userVotes);
@@ -137,21 +155,30 @@ Keep ideas simple! Let&#39;s make the most advanced prediction market: together.
 
           <div className={styles.card}>
             <h2>Your SGT (Shahmeer&#39;s Game Token)</h2>
-            <h3>{sgtBal}</h3>
+            <h3>{formatUnits(sgtBal, 18)}</h3>
             <h2>Your remaining voting power for this epoch</h2>
-            <h3>{pastVotes}</h3>
-            <button>Update voting power</button>
+            <h3>{formatUnits(votesRemaining, 18)}</h3>
+            <h2>Your future voting power</h2>
+            <h3>{formatUnits(curVotes, 18)}</h3>
+            <button onClick={() => alert("unimplemented")}>Commit votes</button>
           </div>
 
           {concepts.map(([{desc, time, hash}, userVotes, cumVotes]) =>
-            <div className={styles.card}>
-              <h3>{desc}</h3>
-              <h4>Your votes: {userVotes}</h4>
-              <h4>Cumulative votes: {cumVotes}</h4>
-              <h1>+ -</h1>
-              <button>Update</button>
-            </div>)
-          }
+            (() => {
+              if (hash === undefined || userVotes === undefined || cumVotes === undefined)
+                return;
+              const amt = userAllocatedAmounts.get(hash) || BigInt(0);
+              return (
+                <div className={styles.card}>
+                  <h3>{desc}</h3>
+                  <h4>Your votes: {formatUnits(userVotes + amt, 18)}</h4>
+                  <h4>Cumulative votes: {formatUnits(cumVotes, 18)}</h4>
+                  {pastVotes > BigInt(0) ?
+                    <h1><button onClick={() => alert("unimplemented")}>+</button> <button onClick={() => alert("unimplemented")}>-</button></h1> :
+                    <></>}
+                </div>
+              );
+            })())}
 
           <div className={styles.card}>
             <h2>Suggest idea</h2>
