@@ -1,5 +1,6 @@
 export const ShahmeersGame = {
-    address: "0x9f98a61646eBF8C7c13394ad352C192eb90c740F",
+    //address: "0x9f98a61646eBF8C7c13394ad352C192eb90c740F",
+    address:"0x51AB2748984Ab17Cb17153e6347C6F744f8211bC",
     abi: [
       {
         type: "function",
@@ -164,7 +165,8 @@ export const ShahmeersGame = {
   } as const;
   
 export const SGToken = {
-    address: "0xFDab24861F407765E6E64c282420585ef7cf68fe",
+    //address: "0xFDab24861F407765E6E64c282420585ef7cf68fe",
+    address: "0xce366FdE251b87eB926D2993AA9228bf140F98aB",
     abi: [
       { type: "constructor", inputs: [], stateMutability: "nonpayable" },
       {
