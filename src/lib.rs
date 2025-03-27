@@ -149,9 +149,9 @@ impl ShahmeersGame {
             .into_iter()
             .map(|(c, a)| {
                 if a.is_negative() {
-                    self.take_votes(c, a.into_raw())
+                    self.take_votes(c, a.unsigned_abs())
                 } else {
-                    self.add_votes(c, a.into_raw())
+                    self.add_votes(c, a.unsigned_abs())
                 }
             })
             .collect::<R<Vec<_>>>()
