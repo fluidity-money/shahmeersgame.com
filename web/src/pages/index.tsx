@@ -71,8 +71,6 @@ const Home: NextPage = () => {
     ],
   });
 
-  console.log("contractResData", contractResData)
-
   const convertSgtToVotes = (amount: bigint): number => {
     const sgt = Number(formatUnits(amount, 18));
     const votes = Math.round(Math.sqrt(sgt));       
@@ -186,8 +184,6 @@ const handleQuadraticVoting = (
         return;
     }
 
-    console.log("userAllocatedAmounts", userAllocatedAmounts)
-
     const adjustVotesArray = Array.from(userAllocatedAmounts.entries()).map(([hash, amount]) => ({
         //concept: hash as `0x${string}`,
         concept: padHex(hash as `0x${string}`, { size: 32 }),
@@ -195,7 +191,7 @@ const handleQuadraticVoting = (
         amount: parseUnits(String(amount), 18)
     }));
 
-    console.log("adjustVotesArray", adjustVotesArray)
+
 
     try {
         const tx = await writeContractAsync({
@@ -205,7 +201,6 @@ const handleQuadraticVoting = (
         });
         alert("Votes committed successfully!");
         setUserAllocatedAmounts(new Map());
-        console.log("Transaction:", tx);
     } catch (err) {
         console.error("Error committing votes:", err);
         alert("Failed to commit votes. Please try again.");
