@@ -594,7 +594,8 @@ export const SGToken = {
   } as const;
   
 export const Lens = {
-    address: "0x5f8049771d5f2fb86Bf64d92C2511Eff10818f73",
+    //address: "0x5f8049771d5f2fb86Bf64d92C2511Eff10818f73",
+    address: "0x2fE8aA97c92df1eA16697BB4FD45bf8Fd1E9784F",
     abi: [
       {
         type: "constructor",

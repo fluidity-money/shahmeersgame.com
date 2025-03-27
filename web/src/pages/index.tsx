@@ -24,14 +24,13 @@ const Home: NextPage = () => {
   const { data } = useQuery(ideasQuery, {});
   const ideas = data ? data.ideas : [];
   const { address: address_ } = useAccount();
-  console.log("address_", address_)
   const address = address_
     ? address_
     : ZERO_ADDRESS;
   const conceptHashes = ideas.map(
     ({ hash }) => `0x${hash}`
   ) as readonly `0x${string}`[];
-  const [userAllocatedAmounts, setUserAllocatedAmounts] = useState(new Map<string, bigint>());
+  const [userAllocatedAmounts, setUserAllocatedAmounts] = useState(new Map<string, number>());
 
   const { data: timepoint } = useReadContract({
     ...ShahmeersGame,
@@ -72,18 +71,43 @@ const Home: NextPage = () => {
     ],
   });
 
-  const conceptVotes = contractResData
-    ? [...(contractResData[0].result ? contractResData[0].result : [])]
-    : [];
-  const userVotes = contractResData
-    ? [...(contractResData[1].result ? contractResData[1].result : [])]
-    : [];
-    
-  const [sgtBal, setSgtBal] = useState(contractResData?.[2]?.result ?? BigInt(0));
+  console.log("contractResData", contractResData)
+
+  const convertSgtToVotes = (amount: bigint): number => {
+    const sgt = Number(formatUnits(amount, 18));
+    const votes = Math.round(Math.sqrt(sgt));       
+    return votes;
+  };
+
+//  const conceptVotes = contractResData
+//    ? [...(contractResData[0].result ? contractResData[0].result : [])]
+//    : [];
+//  const userVotes = contractResData
+//    ? [...(contractResData[1].result ? contractResData[1].result : [])]
+//    : [];
+
+const conceptVotes = [...(contractResData?.[0]?.result ?? [])];
+const userVotes = [...(contractResData?.[1]?.result ?? [])];
+
+  const [sgtBal, setSgtBal] = useState(BigInt(0));
+
+useEffect(() => {
+    const newBalance = contractResData?.[2]?.result;
+    if (newBalance !== undefined) {
+      setSgtBal(newBalance);
+    }
+  }, [contractResData]);
+
   const curVotes = contractResData?.[3]?.result ?? BigInt(0);
   const pastVotes = contractResData?.[4]?.result ?? BigInt(0);
   const votesAlreadySpent = contractResData?.[5]?.result ?? BigInt(0);
-  const [votesRemaining, setVotesRemaining] = useState(pastVotes - votesAlreadySpent);
+  const [votesRemaining, setVotesRemaining] = useState(BigInt(0));
+
+useEffect(() => {
+    if (pastVotes !== undefined && votesAlreadySpent !== undefined) {
+    setVotesRemaining(pastVotes - votesAlreadySpent);
+    }
+  }, [pastVotes, votesAlreadySpent]);
 
   const concepts = (() => {
     if (!ideas || !conceptVotes || !userVotes) return [];
@@ -94,89 +118,66 @@ const Home: NextPage = () => {
     return concepts.sort((a, b) => Number(b[0].time) - Number(a[0].time));
   }, [concepts]);
 
-const calculateVotesCost = (currentVotes: bigint, action: "increase" | "decrease") => {
-    const currentVotesCost = Number(formatUnits(currentVotes, 18)) ** 2;
-    const newVote = action === "increase" 
-      ? Number(formatUnits(currentVotes, 18)) + 1 
-      : Number(formatUnits(currentVotes, 18)) - 1;
+const calculateVotesCost = (currentVotes: number, action: "increase" | "decrease") => {
+    const newVote = action === "increase" ? currentVotes + 1 : currentVotes - 1;
+    const currentVotesCost = currentVotes ** 2;
+    const newVotesCost = newVote ** 2;
+  
     return {
       newVote,
-      newVotesCost: newVote ** 2,
       currentVotesCost,
+      newVotesCost,
+      sgtCostDelta: newVotesCost - currentVotesCost
     };
   };
+  
+
 
 const handleQuadraticVoting = (
     hash: string,
     action: "increase" | "decrease",
-    currentNumberOfVotes: bigint
+    currentVoteCount: number
   ) => {
-
-    const { newVotesCost, currentVotesCost } = calculateVotesCost(currentNumberOfVotes, action);
-
-    if (action === "increase" && votesRemaining === BigInt(0))
-      return alert("You don't have enough remaining votes");
-
-    if (sgtBal - BigInt((newVotesCost - currentVotesCost)) < 0) {
-      alert("You don't have enough SGT on your balance");
-      return new Error("SGT balance cannot be negative");
+    const { newVote, currentVotesCost, newVotesCost, sgtCostDelta } = calculateVotesCost(currentVoteCount, action);
+  
+    const sgtBalNum = Number(formatUnits(sgtBal, 18));
+    const votesRemainingNum = Number(formatUnits(votesRemaining, 18));
+  
+    if (action === "increase" && votesRemainingNum <= 0) {
+      alert("You don't have enough remaining votes");
+      return;
     }
-
-    const convertedVotesRemaining: number = Number(
-      formatUnits(votesRemaining, 18)
-    );
-    const newVotesRemaining: string = (
-        action === "increase"
-        ? convertedVotesRemaining - 1
-        : convertedVotesRemaining + 1
-    ).toString();
-
-    const updatedVotesRemaining: bigint = parseUnits(newVotesRemaining, 18);
-
+  
+    if (action === "increase" && sgtBalNum < sgtCostDelta) {
+      alert("You don't have enough SGT on your balance");
+      return;
+    }
+  
     setUserAllocatedAmounts((prev) => {
-      const currentVotes = prev.get(hash) || BigInt(0);
-      const convertedCurrentVotes: number = Number(
-        formatUnits(currentVotes, 18)
-      );
-
-      const newCurrentVotes: string = (
-        action === "increase"
-          ? convertedCurrentVotes + 1
-          : convertedCurrentVotes - 1
-      ).toString();
-
-      if (Number(newCurrentVotes) < 0) return prev;
-
-      const updatedCurrentVotes: bigint = parseUnits(newCurrentVotes, 18);
-
+      const currentVotes = prev.get(hash) ?? 0;
+      const newVotes = action === "increase" ? currentVotes + 1 : currentVotes - 1;
+      if (newVotes < 0) return prev;
+  
       const newMap = new Map(prev);
-      newMap.set(hash, updatedCurrentVotes);
+      newMap.set(hash, newVotes);
       return newMap;
     });
-
-
-    const convertedSgtBal: number = Number(
-        formatUnits(sgtBal, 18)
-      );
-
-      convertedSgtBal
-
-      const newStBal: string = (
-        action === "increase"
-        ? convertedSgtBal - (newVotesCost - currentVotesCost)
-        : convertedSgtBal + (currentVotesCost - newVotesCost)
-    ).toString();
-
-    const updatedSgtBal: bigint = parseUnits(newStBal, 18);
-
-    setSgtBal(updatedSgtBal);
-    setVotesRemaining(updatedVotesRemaining);
-
+  
+    const newSGT = action === "increase"
+      ? sgtBalNum - sgtCostDelta
+      : sgtBalNum - sgtCostDelta;
+  
+    const newRemaining = action === "increase"
+      ? votesRemainingNum - 1
+      : votesRemainingNum + 1;
+  
+    setSgtBal(parseUnits(newSGT.toString(), 18));
+    setVotesRemaining(parseUnits(newRemaining.toString(), 18));
   };
-
-
+  
   const { writeContractAsync } = useWriteContract();
   
+
 
   const commitVotes = async () => {
     
@@ -185,11 +186,16 @@ const handleQuadraticVoting = (
         return;
     }
 
+    console.log("userAllocatedAmounts", userAllocatedAmounts)
+
     const adjustVotesArray = Array.from(userAllocatedAmounts.entries()).map(([hash, amount]) => ({
         //concept: hash as `0x${string}`,
         concept: padHex(hash as `0x${string}`, { size: 32 }),
-        amount: BigInt(amount),
+        //amount: BigInt(amount),
+        amount: parseUnits(String(amount), 18)
     }));
+
+    console.log("adjustVotesArray", adjustVotesArray)
 
     try {
         const tx = await writeContractAsync({
@@ -268,34 +274,44 @@ const handleQuadraticVoting = (
             <button onClick={commitVotes}>Commit votes</button>
           </div>
 
-          {sortedConcepts.map(([{ desc, time, hash }, userVotes, cumVotes]) =>
+          {sortedConcepts.length > 0 && sortedConcepts.map(([{ desc, time, hash }, userVotes, cumVotes]) =>
             (() => {
+
               if (
                 hash === undefined ||
                 userVotes === undefined ||
                 cumVotes === undefined
               )
                 return;
-              const amt = userAllocatedAmounts.get(hash) || BigInt(0);
+
+                const userVoteCount = convertSgtToVotes(userVotes);
+                const cumVoteCount = convertSgtToVotes(cumVotes);
+                const amt = userAllocatedAmounts.get(hash) ?? 0;
+                
+                const totalUserVotes = userVoteCount + amt;
+                const totalCumVotes = cumVoteCount + amt;
+                
               return (
                 <div className={styles.card} key={hash}>
                   <h3>{desc}</h3>
-                  <h4>Your votes: {formatUnits(userVotes + amt, 18)}</h4>
-                  <h4>Cumulative votes: {formatUnits(cumVotes + amt, 18)}</h4>
+                  <h4>Your votes: 
+                    {totalUserVotes}
+                    </h4>
+                    
+                  <h4>
+                    Cumulative votes: 
+                    {totalCumVotes}
+                    </h4>
                   <h1>
                     <button
-                      onClick={() =>
-                        handleQuadraticVoting(hash, "increase", userVotes + amt)
-                      }
-                      disabled={sgtBal === BigInt(0) || votesRemaining === BigInt(0)}
+                    onClick={() => handleQuadraticVoting(hash, "increase", totalUserVotes)}
+                    disabled={sgtBal === BigInt(0) || votesRemaining === BigInt(0) || votesRemaining < BigInt(0)}
                     >
                       +
                     </button>{" "}
                     <button
-                      onClick={() =>
-                        handleQuadraticVoting(hash, "decrease", userVotes + amt)
-                      }
-                      disabled={userVotes + amt === BigInt(0)}
+                        onClick={() => handleQuadraticVoting(hash, "decrease", totalUserVotes)}
+                        disabled={userVotes + BigInt(amt) === BigInt(0)}
                     >
                       -
                     </button>
