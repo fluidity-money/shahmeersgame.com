@@ -11,8 +11,8 @@ import {
   useWriteContract,
 } from 'wagmi';
 import { formatUnits, parseUnits, padHex } from "viem";
-import { ShahmeersGame, SGToken, Lens } from "./contracts";
-import { ideasQuery } from "./graphql";
+import { ShahmeersGame, SGToken, Lens } from "../contracts/contracts";
+import { ideasQuery } from "../gql/query";
 
 function zipThree<T, U, V>(arr1: T[], arr2: U[], arr3: V[]): [T, U, V][] {
   return arr1.map((_, i) => [arr1[i], arr2[i], arr3[i]]);
