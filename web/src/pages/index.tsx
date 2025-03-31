@@ -22,7 +22,19 @@ const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 
 const Home: NextPage = () => {
   const { data } = useQuery(ideasQuery, {});
-  const ideas = data ? data.ideas : [];
+//  const ideas = data ? data.ideas : [];
+
+const [ideas, setIdeas] = useState([]);
+
+    useEffect(() => {
+    if (data?.ideas) {
+        setIdeas(data.ideas);
+    }
+    }, [data]);
+
+    console.log("ideas", ideas)
+
+
   const { address: address_ } = useAccount();
   const address = address_
     ? address_
@@ -116,6 +128,8 @@ useEffect(() => {
     return concepts.sort((a, b) => Number(b[0].time) - Number(a[0].time));
   }, [concepts]);
 
+  console.log("sortedConcepts", sortedConcepts);
+
 const calculateVotesCost = (currentVotes: number, action: "increase" | "decrease") => {
     const newVote = action === "increase" ? currentVotes + 1 : currentVotes - 1;
     const currentVotesCost = currentVotes ** 2;
@@ -191,7 +205,7 @@ const handleQuadraticVoting = (
         amount: parseUnits(String(amount), 18)
     }));
 
-
+console.log("adjustVotesArray", adjustVotesArray)
 
     try {
         const tx = await writeContractAsync({
