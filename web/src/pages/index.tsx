@@ -30,13 +30,13 @@ const Home: NextPage = () => {
   const { data } = useQuery(ideasQuery, {});
 //  const ideas = data ? data.ideas : [];
 
-const [ideas, setIdeas] = useState<Idea[]>([]);
-console.log("ideas", ideas)
-    useEffect(() => {
-    if (data?.ideas) {
-        setIdeas(data.ideas);  
-    }
-    }, [data]);
+//const [ideas, setIdeas] = useState<Idea[]>([]);
+//console.log("ideas", ideas)
+//    useEffect(() => {
+//    if (data?.ideas) {
+//        setIdeas(data.ideas);  
+//    }
+//    }, [data]);
 
   
 
@@ -45,7 +45,7 @@ console.log("ideas", ideas)
   const address = address_
     ? address_
     : ZERO_ADDRESS;
-  const conceptHashes = ideas.map(
+  const conceptHashes = data?.ideas.map(
     ({ hash }) => `0x${hash}`
   ) as readonly `0x${string}`[];
   const [userAllocatedAmounts, setUserAllocatedAmounts] = useState(new Map<string, number>());
@@ -131,9 +131,9 @@ useEffect(() => {
 //  })();
 
   const concepts = useMemo(() => {
-    if (!ideas.length || !conceptVotes.length || !userVotes.length) return [];
-    return zipThree(ideas, conceptVotes, userVotes);
-  }, [ideas, userVotes, conceptVotes]);
+    if (!data?.ideas.length || !conceptVotes.length || !userVotes.length) return [];
+    return zipThree(data.ideas, conceptVotes, userVotes);
+  }, [data?.ideas, userVotes, conceptVotes]);
 
   console.log("concepts", concepts)
 
