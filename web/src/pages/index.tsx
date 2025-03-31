@@ -34,9 +34,7 @@ const [ideas, setIdeas] = useState<Idea[]>([]);
 console.log("ideas", ideas)
     useEffect(() => {
     if (data?.ideas) {
-        setIdeas(data.ideas);
-
-        
+        setIdeas(data.ideas);  
     }
     }, [data]);
 
@@ -135,7 +133,7 @@ useEffect(() => {
   const concepts = useMemo(() => {
     if (!ideas.length || !conceptVotes.length || !userVotes.length) return [];
     return zipThree(ideas, conceptVotes, userVotes);
-  }, [ideas]);
+  }, [ideas, userVotes, conceptVotes]);
 
   console.log("concepts", concepts)
 
