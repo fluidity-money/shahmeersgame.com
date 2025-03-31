@@ -1,6 +1,6 @@
 export const ShahmeersGame = {
-    //address: "0x9f98a61646eBF8C7c13394ad352C192eb90c740F",
-    address:"0x51AB2748984Ab17Cb17153e6347C6F744f8211bC",
+    address: "0x9f98a61646eBF8C7c13394ad352C192eb90c740F",
+    //address:"0x51AB2748984Ab17Cb17153e6347C6F744f8211bC",
     abi: [
       {
         type: "function",
@@ -165,8 +165,8 @@ export const ShahmeersGame = {
   } as const;
   
 export const SGToken = {
-    //address: "0xFDab24861F407765E6E64c282420585ef7cf68fe",
-    address: "0xce366FdE251b87eB926D2993AA9228bf140F98aB",
+    address: "0xFDab24861F407765E6E64c282420585ef7cf68fe",
+    //address: "0xce366FdE251b87eB926D2993AA9228bf140F98aB",
     abi: [
       { type: "constructor", inputs: [], stateMutability: "nonpayable" },
       {
@@ -594,8 +594,8 @@ export const SGToken = {
   } as const;
   
 export const Lens = {
-    //address: "0x5f8049771d5f2fb86Bf64d92C2511Eff10818f73",
-    address: "0x2fE8aA97c92df1eA16697BB4FD45bf8Fd1E9784F",
+    address: "0x5f8049771d5f2fb86Bf64d92C2511Eff10818f73",
+    //address: "0x2fE8aA97c92df1eA16697BB4FD45bf8Fd1E9784F",
     abi: [
       {
         type: "constructor",
