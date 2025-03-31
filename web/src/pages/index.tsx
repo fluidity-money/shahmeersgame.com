@@ -18,21 +18,27 @@ function zipThree<T, U, V>(arr1: T[], arr2: U[], arr3: V[]): [T, U, V][] {
   return arr1.map((_, i) => [arr1[i], arr2[i], arr3[i]]);
 }
 
+type Idea = {
+    desc: string;
+    hash: string;
+    time: number;
+  };
+
 const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 
 const Home: NextPage = () => {
   const { data } = useQuery(ideasQuery, {});
 //  const ideas = data ? data.ideas : [];
 
-const [ideas, setIdeas] = useState([]);
-
+const [ideas, setIdeas] = useState<Idea[]>([]);
+console.log("ideas", ideas)
     useEffect(() => {
     if (data?.ideas) {
         setIdeas(data.ideas);
     }
     }, [data]);
 
-    console.log("ideas", ideas)
+  
 
 
   const { address: address_ } = useAccount();
@@ -119,13 +125,22 @@ useEffect(() => {
     }
   }, [pastVotes, votesAlreadySpent]);
 
-  const concepts = (() => {
-    if (!ideas || !conceptVotes || !userVotes) return [];
-    return zipThree(ideas, conceptVotes, userVotes);
-  })();
+//  const concepts = (() => {
+//    if (!ideas || !conceptVotes || !userVotes) return [];
+//    return zipThree(ideas, conceptVotes, userVotes);
+//  })();
 
-  const sortedConcepts = useMemo(() => {
-    return concepts.sort((a, b) => Number(b[0].time) - Number(a[0].time));
+  const concepts = useMemo(() => {
+    if (!ideas.length || !conceptVotes.length || !userVotes.length) return [];
+    return zipThree(ideas, conceptVotes, userVotes);
+  }, [ideas, conceptVotes, userVotes]);
+
+//  const sortedConcepts = useMemo(() => {
+//    return concepts.sort((a, b) => Number(b[0].time) - Number(a[0].time));
+//  }, [concepts]);
+
+const sortedConcepts = useMemo(() => {
+    return [...concepts].sort((a, b) => Number(b[0].time) - Number(a[0].time));
   }, [concepts]);
 
   console.log("sortedConcepts", sortedConcepts);
