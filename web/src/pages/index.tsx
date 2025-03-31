@@ -35,6 +35,8 @@ console.log("ideas", ideas)
     useEffect(() => {
     if (data?.ideas) {
         setIdeas(data.ideas);
+
+        
     }
     }, [data]);
 
@@ -133,7 +135,9 @@ useEffect(() => {
   const concepts = useMemo(() => {
     if (!ideas.length || !conceptVotes.length || !userVotes.length) return [];
     return zipThree(ideas, conceptVotes, userVotes);
-  }, [ideas, conceptVotes, userVotes]);
+  }, [ideas]);
+
+  console.log("concepts", concepts)
 
 //  const sortedConcepts = useMemo(() => {
 //    return concepts.sort((a, b) => Number(b[0].time) - Number(a[0].time));
